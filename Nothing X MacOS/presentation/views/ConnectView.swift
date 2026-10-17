@@ -49,7 +49,7 @@ struct ConnectView: View {
                 
                 VStack {
                     // Ear 1 Image
-                    Image("ear_1")
+                    Image(bundled: "ear_1")
                         .overlay(
                             LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.8)]), startPoint: .top, endPoint: .bottom)
                                 .blendMode(.darken) // Blend mode to darken the image

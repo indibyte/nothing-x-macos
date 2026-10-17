@@ -240,7 +240,7 @@ struct ControlsDetailView: View {
                     Spacer()
 
                     Button(action: { onSelect(option) }) {
-                        Image(option == selected ? "radio_button_selected_dark" : "radio_button_not_selected_dark")
+                        Image(bundled: option == selected ? "radio_button_selected_dark" : "radio_button_not_selected_dark")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 16, height: 16)

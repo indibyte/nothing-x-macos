@@ -41,7 +41,7 @@ struct BluetoothIsOffView: View {
                             
                         
                         HStack {
-                            Image("bluetooth_disabled")
+                            Image(bundled: "bluetooth_disabled")
                                 .resizable() // Make the image resizable
                                 .scaledToFit()
                                 .scaleEffect(0.3)
@@ -109,6 +109,8 @@ struct BluetoothIsOffView: View {
     }
 }
 
-#Preview {
-    BluetoothIsOffView()
+struct BluetoothIsOffView_Previews: PreviewProvider {
+    static var previews: some View {
+        BluetoothIsOffView()
+    }
 }

@@ -191,7 +191,7 @@ struct BudsPickerButton: ButtonStyle {
         ZStack {
             // Image view
             if #available(macOS 14.0, *) {
-                Image(isDarkened ? imageNameDarken : imageName) // Use the name of your image asset
+                Image(bundled: isDarkened ? imageNameDarken : imageName) // Use the name of your image asset
                     .resizable() // Make the image resizable
                     .scaledToFit() // Maintain the aspect ratio
                     .frame(width: 60, height: 100) // Set the desired size
@@ -203,7 +203,7 @@ struct BudsPickerButton: ButtonStyle {
                     .offset(x: offset, y: 0)
 
             } else {
-                Image(isDarkened ? imageNameDarken : imageName) // Use the name of your image asset
+                Image(bundled: isDarkened ? imageNameDarken : imageName) // Use the name of your image asset
                     .resizable() // Make the image resizable
                     .scaledToFit() // Maintain the aspect ratio
                     .frame(width: 60, height: 100) // Set the desired size

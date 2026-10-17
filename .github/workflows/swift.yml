@@ -37,3 +37,12 @@ jobs:
             -scheme "Nothing X MacOS" \
             -destination 'platform=macOS' \
             build CODE_SIGNING_ALLOWED=NO
+
+  # Builds the .app the same way users without Xcode do.
+  app-swiftpm:
+    name: App build (SwiftPM, no Xcode project)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build app bundle
+        run: scripts/build-app.sh

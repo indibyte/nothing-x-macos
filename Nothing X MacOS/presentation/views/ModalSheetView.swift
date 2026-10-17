@@ -76,7 +76,7 @@ struct ModalSheetView : View {
             }
             .frame(width: 250, height: 180)
 //            .padding()
-            .background(Color(.modalSheet))
+            .background(Color(nsColor: NSColor(named: "ModalSheetColor") ?? NSColor(srgbRed: 0x1B / 255.0, green: 0x1D / 255.0, blue: 0x1F / 255.0, alpha: 1)))
 //            .cornerRadius(.leading)
             .shadow(radius: 10)
             .clipShape(TopRoundedRectangle(radius: 18))

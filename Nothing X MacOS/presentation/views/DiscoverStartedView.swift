@@ -163,7 +163,7 @@ struct DiscoverStartedView: View {
                             }
                             
                             
-                            Image("ear_1")
+                            Image(bundled: "ear_1")
                                 .scaledToFit()
                                 .scaleEffect(viewModel.budsScale)
                                 .offset(x: viewModel.budsOffsetX, y: viewModel.budsOffsetY)
@@ -235,6 +235,8 @@ struct DiscoverStartedView: View {
 
 }
 
-#Preview {
-    DiscoverStartedView()
+struct DiscoverStartedView_Previews: PreviewProvider {
+    static var previews: some View {
+        DiscoverStartedView()
+    }
 }

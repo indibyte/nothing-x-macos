@@ -2,6 +2,8 @@
 
 An unofficial macOS companion app for Nothing and CMF earbuds. Inspired by the Nothing X iOS app, built with SwiftUI and Core Bluetooth.
 
+> This is a fork of [marlon-yepes/cmf-macos](https://github.com/marlon-yepes/cmf-macos) that adds a build without Xcode and fixes for the CMF Buds 2. See [Changes in this fork](#changes-in-this-fork).
+
 ## Supported Devices
 
 **Nothing**
@@ -54,11 +56,30 @@ An unofficial macOS companion app for Nothing and CMF earbuds. Inspired by the N
 
 ## Building
 
-1. Clone the repository
-2. Open `Nothing X MacOS.xcodeproj` in Xcode
-3. Build and run (Cmd+R)
-
 No external dependencies — uses only native Apple frameworks (SwiftUI, Combine, Core Bluetooth).
+
+### Without Xcode (Command Line Tools only)
+
+```sh
+xcode-select --install          # if the Command Line Tools aren't installed yet
+git clone https://github.com/indibyte/nothing-x-macos
+cd nothing-x-macos
+scripts/build-app.sh --install  # builds, copies to /Applications and launches
+```
+
+Drop `--install` to only build `build/Nothing X.app`. The app is ad-hoc signed for local use; on first launch macOS asks for Bluetooth permission. Since there's no asset catalog compiler without Xcode, the menu bar uses the system `earbuds` symbol instead of the custom ear icon.
+
+### With Xcode
+
+1. Open `Nothing X MacOS.xcodeproj` in Xcode
+2. Build and run (Cmd+R)
+
+## Changes in this fork
+
+- **Builds without Xcode** — a root `Package.swift` plus `scripts/build-app.sh` produce a signed `.app` using only the Command Line Tools.
+- **Correct RFCOMM channel** — the control channel was hard-coded to 15, but it differs per model (CMF Buds 2 uses 16). The app now looks up the `NTAPP` service via SDP, falling back to 15. Before this, CMF Buds 2 showed as connected but every command timed out.
+- **Battery levels** — `0xE002` packets were decoded as battery reports, but on CMF Buds 2 they carry small per-bud status values, which overwrote the real levels (e.g. 4% instead of 100%). Battery now comes only from the real battery reports.
+- **Larger window** — the UI is scaled 1.5× (`uiScale` in `Nothing_X_MacOSApp.swift`).
 
 ## Acknowledgements
 
