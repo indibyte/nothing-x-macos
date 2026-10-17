@@ -1008,9 +1008,10 @@ class NothingServiceImpl : NothingService {
             
             
         case Commands.READ_BATTERY_THREE.rawValue:
-            
-            readBattery(hexString: rawData)
-            
+            // Not a battery report: CMF Buds 2 send small per-bud status values here
+            // (e.g. 0x84/0x82) that clobber the real levels from READ_BATTERY_ONE
+            break
+
         case Commands.READ_LATENCY.rawValue:
             
             let latency = readLatencyMode(hexArray: rawData)
