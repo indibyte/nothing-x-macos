@@ -149,8 +149,11 @@ class BluetoothManager: NSObject, IOBluetoothDeviceInquiryDelegate, IOBluetoothR
                     }
                     
                     // Open an RFCOMM channel to the device
-                    
-                    let resultRFCOMM = self.device?.openRFCOMMChannelAsync(&self.channel, withChannelID: channelID, delegate: self)
+                    // The control channel differs per model (e.g. CMF Buds 2 uses 16), so look it up via SDP
+                    let rfcommChannelID = self.lookUpNothingChannel() ?? channelID
+                    self.log.info("Using RFCOMM channel \(rfcommChannelID)")
+
+                    let resultRFCOMM = self.device?.openRFCOMMChannelAsync(&self.channel, withChannelID: rfcommChannelID, delegate: self)
                     
                     if resultRFCOMM == kIOReturnSuccess {
                         self.log.info("Opened RFCOMM channel")
@@ -174,6 +177,26 @@ class BluetoothManager: NSObject, IOBluetoothDeviceInquiryDelegate, IOBluetoothR
         
     }
     
+    /// Finds the RFCOMM channel of the Nothing app service ("NTAPP") in the device's SDP records.
+    private func lookUpNothingChannel() -> UInt8? {
+        guard let device = self.device else { return nil }
+        if device.services == nil || device.services.isEmpty {
+            _ = device.performSDPQuery(nil)
+            for _ in 0..<50 where device.services == nil || device.services.isEmpty {
+                Thread.sleep(forTimeInterval: 0.1)
+            }
+        }
+        for case let record as IOBluetoothSDPServiceRecord in device.services ?? [] {
+            guard let name = record.getServiceName(), name.uppercased().contains("NTAPP") else { continue }
+            var channelID: BluetoothRFCOMMChannelID = 0
+            if record.getRFCOMMChannelID(&channelID) == kIOReturnSuccess {
+                return channelID
+            }
+        }
+        log.warning("NTAPP service not found via SDP, falling back to default channel")
+        return nil
+    }
+
     func send(data: UnsafeMutableRawPointer!, length: UInt16) {
         channel?.writeSync(data, length: length)
     }
@@ -185,7 +208,8 @@ class BluetoothManager: NSObject, IOBluetoothDeviceInquiryDelegate, IOBluetoothR
         
         // Convert Data to [UInt8] (byte array)
         let rawData = [UInt8](data)
-        
+        log.debug("RX \(rawData.map { String(format: "%02x", $0) }.joined(separator: " "))")
+
         NotificationCenter.default.post(name: Notification.Name(DataNotifications.DATA_RECEIVED.rawValue), object: nil, userInfo: ["data": rawData])
         
     }
